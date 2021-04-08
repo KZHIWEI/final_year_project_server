@@ -34,18 +34,7 @@ def get_wordnet_pos(treebank_tag):
 
 
 def tokenize_text(original):
-    original: str
-    lower = original.lower()
-    tokenize = word_tokenize(lower)
-    stop_words = []
-    for s in tokenize:
-        if s not in stopwords.words('english'):
-            stop_words.append(s)
-
-    lemmatizer = WordNetLemmatizer()
-    word_tags = [(w, get_wordnet_pos(tags)) for w, tags in pos_tag(stop_words)]
-    lemmatization = [lemmatizer.lemmatize(w, tag) for w, tag in word_tags]
-    return lemmatization
+    return original.split()
 
 
 def init_model():
@@ -89,11 +78,12 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in nb_dic.items():
-            ret[k] = int(v.predict(modeled_text))
+            ret[k] = float(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")
         self.end_headers()
+        print(j)
         self.wfile.write(bytes(j,'utf-8'))
 
     def handle_svm(self):
@@ -103,7 +93,7 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in svm_dic.items():
-            ret[k] = int(v.predict(modeled_text))
+            ret[k] = float(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")
@@ -117,7 +107,7 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in rf_dic.items():
-            ret[k] = int(v.predict(modeled_text))
+            ret[k] = float(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")

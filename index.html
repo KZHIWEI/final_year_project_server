@@ -30,16 +30,15 @@
         if (story.length === 0 ){
             return
         }
-        const Http = new XMLHttpRequest();
         const url=document.getElementById("algorithm").value
         // console.log(url)
-        Http.open("POST", url);
-        Http.send(story);
         fetch(url,{
-            method:'POST'
+            method:'POST',
+            body:story
         })
       .then(response => response.json())
       .then((data)=>{
+            console.log("get response\n")
             result_text = ''
             for (const [key, value] of Object.entries(data)) {
                 result_text += `${key}: ${value}\n`
