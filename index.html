@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="icon" href="data:,">
+<head>
+    <meta charset="UTF-8">
+    <title>Predict Smell Descriptors</title>
+</head>
+<body>
+<label for="algorithm">Choose a Algorithms:</label>
+<select name="algorithm" id="algorithm">
+  <option value="nb">NB</option>
+  <option value="svm">SVM</option>
+  <option value="rf">RF</option>
+</select>
+<br>
+<label for="story">Your story:</label>
+<br>
+<textarea id="story" name="story" rows="20" cols="100">
+</textarea>
+<br>
+<input type="submit" value="Submit" onclick="submit_text()">
+<br>
+<div id="result">
+
+</div>
+</body>
+<script>
+    function submit_text() {
+        story = document.getElementById("story").value
+        if (story.length === 0 ){
+            return
+        }
+        const Http = new XMLHttpRequest();
+        const url=document.getElementById("algorithm").value
+        console.log(url)
+        Http.open("POST", url);
+        Http.send(story);
+
+        Http.onreadystatechange = (e) => {
+            response = JSON.parse(Http.responseText)
+            result_text = ''
+            for (const [key, value] of Object.entries(response)) {
+                result_text += `${key}: ${value}\n`
+            }
+            document.getElementById("result").innerText = result_text
+        }
+    }
+</script>
+</html>
