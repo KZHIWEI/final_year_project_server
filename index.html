@@ -32,18 +32,20 @@
         }
         const Http = new XMLHttpRequest();
         const url=document.getElementById("algorithm").value
-        console.log(url)
+        // console.log(url)
         Http.open("POST", url);
         Http.send(story);
-
-        Http.onreadystatechange = (e) => {
-            response = JSON.parse(Http.responseText)
+        fetch(url,{
+            method:'POST'
+        })
+      .then(response => response.json())
+      .then((data)=>{
             result_text = ''
-            for (const [key, value] of Object.entries(response)) {
+            for (const [key, value] of Object.entries(data)) {
                 result_text += `${key}: ${value}\n`
             }
             document.getElementById("result").innerText = result_text
-        }
+      });
     }
 </script>
 </html>

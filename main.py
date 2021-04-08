@@ -10,7 +10,7 @@ from nltk import word_tokenize, WordNetLemmatizer, pos_tag
 from nltk.corpus import stopwords, wordnet
 from sklearn.feature_extraction.text import TfidfVectorizer
 import nltk
-hostName = "localhost"
+hostName = "0.0.0.0"
 serverPort = 8080
 
 idf: TfidfVectorizer = None
@@ -89,7 +89,7 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in nb_dic.items():
-            ret[k] = float(v.predict(modeled_text))
+            ret[k] = int(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")
@@ -103,7 +103,7 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in svm_dic.items():
-            ret[k] = float(v.predict(modeled_text))
+            ret[k] = int(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")
@@ -117,7 +117,7 @@ class MyServer(BaseHTTPRequestHandler):
         modeled_text = idf.transform(modeled_text)
         ret = {}
         for k , v in rf_dic.items():
-            ret[k] = float(v.predict(modeled_text))
+            ret[k] = int(v.predict(modeled_text))
         j = json.dumps(ret)
         self.send_response(200)
         self.send_header("Content-type", "application/json")
@@ -128,9 +128,9 @@ class MyServer(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('wordnet')
+    # nltk.download('stopwords')
+    # nltk.download('averaged_perceptron_tagger')
+    # nltk.download('wordnet')
     init_model()
     webServer = HTTPServer((hostName, serverPort), MyServer)
     print("Server started http://%s:%s" % (hostName, serverPort))
